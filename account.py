@@ -44,7 +44,7 @@ class Account:
         """Withdraw money from the account"""
 
         # if amount is greater than balance, raise an exception
-        if amount > self.balance:
+        if amount > self._balance:
             raise ValueError("amount must be <= to balance")
         elif amount < Decimal('0.00'):
             raise ValueError("amount must be positive")
