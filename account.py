@@ -50,3 +50,26 @@ class Account:
             raise ValueError("amount must be positive")
 
         self._balance -= amount
+
+# Create an instance of the class
+account1 = Account('John Green', Decimal('50.00'))
+print(f'account1: {account1.name}, {account1.balance}')
+
+# These assignments will throw errors because there are no setters (i.e. the attributes are read only)
+print('About to try reassigning the name on the account to Jane Green.')
+try:
+    account1.name = 'Jane Green'
+    print(account1.name)
+except AttributeError:
+    print("AttributeError: property 'name' of 'Account' has no setter")
+finally:
+    print(f'Current name on account: {account1.name}')
+
+print('About to try reassigning the balance on the account to $100.00.')
+try:
+    account1.balance = Decimal('100.00')
+    print(account1.balance)
+except AttributeError:
+    print("AttributeError: property 'balance' of 'Account' has no setter")
+finally:
+    print(f'Current balance in account: {account1.balance}')

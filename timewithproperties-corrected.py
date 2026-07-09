@@ -87,5 +87,8 @@ print(f'wake_up: {wake_up}')
 wake_up.hour = 6
 print(f'wake_up: {wake_up}')
 # try reassigning hour to an invalid time
-wake_up.hour = 100
-print(f'wake_up: {wake_up}')
+try:
+    wake_up.hour = 100
+    print(f'wake_up: {wake_up}')
+except Exception as e:
+    print(f'Error: {e}')
