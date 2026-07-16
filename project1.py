@@ -1,5 +1,5 @@
 """
-    script: project1Employees.py
+    script: project1.py
     action: a menu-driven application that reads in employee data and displays reports based on the chosen menu option
     author: Kristin Brooks
     date:   07/12/26
@@ -95,7 +95,7 @@ class Person(ABC):
         """Representation of a person object"""
         return (f'Person(first_name={self.first_name!r}, '
                 f'last_name={self.last_name!r}, '
-                f'id_number={self._id_number!r}, '
+                f'id_number={self.id_number!r}, '
                 f'email_address={self.email_address!r}, '
                 f'phone_number={self.phone_number!r})')
 
@@ -189,10 +189,10 @@ class Employee(Person):
         """Representation of an employee object"""
         return (f'Employee(first_name={self.first_name!r}, '
                 f'last_name={self.last_name!r}, '
-                f'id_number={self._id_number!r}, '
+                f'id_number={self.id_number!r}, '
                 f'email_address={self.email_address!r}, '
                 f'phone_number={self.phone_number!r}, '
-                f'hire_date={self._hire_date!r}, '
+                f'hire_date={self.hire_date}, '
                 f'role_person={self.role_person!r}, '
                 f'classification_person={self.classification_person!r}, '
                 f'annual_salary={self.annual_salary!r})')
@@ -210,13 +210,92 @@ def get_employees(filename):
     try:
         with open(filename, mode='r') as employee_file:
             try:
+                # skip header line
                 next(employee_file)
             except StopIteration:
                 raise ValueError('Employee text file is empty.') from None
+            employee_list = []
             for line in employee_file:
+                # skip blank lines
                 if not line.strip():
                     continue
-            # finish this
-
+                try:
+                    # read in a line and unpack into variables
+                    last_name, first_name, id_number, email_address, phone_number, hire_date, classification_value, role_value, annual_salary = line.split()
+                    # get the dictionary keys
+                    classification_key = get_key_from_value(Employee.classification_dictionary, classification_value)
+                    role_key = get_key_from_value(Employee.role_dictionary, role_value)
+                    if classification_key is None or role_key is None:
+                        continue
+                    # Create an Employee object
+                    employee = Employee(first_name=first_name, last_name=last_name, id_number=id_number, email_address=email_address,
+                                    phone_number=phone_number, hire_date=hire_date, role_person=role_key,
+                                    classification_person=classification_key, annual_salary=annual_salary)
+                    # add the employee to the list
+                    employee_list.append(employee)
+                    print(f'Added employee {first_name} {last_name}...')
+                except ValueError:
+                    continue
+            return employee_list
     except FileNotFoundError:
         raise ValueError('The employee text file was not found.') from None
+
+def display_employee_employment_information(employee_list):
+    """Displays the employee employment information"""
+    print(f'{"Employee Employment Information":^135}')
+    print(f'{"LastName":<16}{"FirstName":<16}{"ID":<10}{"Email":<32}'
+          f'{"Phone":<18}{"HireDate":<18}{"Classification":<20}{"Role":<14}{"Salary"}')
+    for employee in employee_list:
+        hire_date = str(employee.hire_date.month) + '/' + str(employee.hire_date.day) + '/' + str(employee.hire_date.year)
+        print(f'{employee.last_name:<16}{employee.first_name:<16}{employee.id_number:<10}'
+              f'{employee.email_address:<32}{employee.phone_number:<18}'
+              f'{hire_date:<18}{Employee.classification_dictionary[employee.classification_person]:<20}'
+              f'{Employee.role_dictionary[employee.role_person]:<14}{employee.annual_salary:.2f}')
+
+def display_employee_contact_information(employee_list):
+    """Displays the employee contact information"""
+    print(f'{"Employee Contact Information":^75}')
+    print(f'{"LastName":<16}{"FirstName":<16}{"ID":<10}{"Email":<32}{"Phone":<18}')
+    for employee in employee_list:
+        print(f'{employee.last_name:<16}{employee.first_name:<16}{employee.id_number:<10}'
+              f'{employee.email_address:<32}{employee.phone_number:<18}')
+
+def create_menu(employee_list):
+    """Creates the menu"""
+    user_choice = '0'
+    while user_choice != '1':
+        print()
+        print('Please select an option below')
+        print()
+        print('1. Quit')
+        print('2. Display Employee Employment Information')
+        print('3. Display Employee Contact Information')
+        print()
+        user_choice = input('>')
+        print()
+        if user_choice not in ('1', '2', '3'):
+            print(f'I am sorry, {user_choice} is not an option.')
+            continue
+        elif  user_choice == '2':
+            display_employee_employment_information(employee_list)
+        elif user_choice == '3':
+            display_employee_contact_information(employee_list)
+    print('Thank you for using the system.')
+    print()
+    print('Now exiting the program...')
+
+def main():
+    print('Starting application...')
+    print()
+    print('Adding employees...')
+    print()
+    try:
+        employee_list = get_employees('employees.txt')
+    except ValueError as error:
+        print(error)
+        return
+    create_menu(employee_list)
+
+
+if __name__ == '__main__':
+    main()
