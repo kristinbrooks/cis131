@@ -3,7 +3,7 @@
     action: a menu-driven application that reads in employee and student data and displays reports based on
             the chosen menu option
     author: Kristin Brooks
-    date:   07/19/26
+    date:   07/20/26
 """
 from abc import ABC, abstractmethod
 from datetime import date
@@ -265,7 +265,8 @@ class Student(Person):
             raise ValueError('Invalid course: Course must be in the course name list.')
         self.courses_student_dict[course] = score
 
-    def get_student_academics(self):    # unused function from the original menu option 6
+    # NOTE: unused function from the original menu option 6
+    def get_student_academics(self):
         """Returns a list of student's name, id, and academic scores"""
         student_academics = [self.last_name, self.first_name, self.id_number]
         for course in self.course_name_list:
@@ -483,8 +484,9 @@ def display_all_person_contact_information(employee_list, student_list):
         print(f'{person.last_name:<16}{person.first_name:<16}{person.id_number:<10}'
               f'{person.email_address:<32}{person.phone_number:<18}')
 
-def display_student_scores(student_list):  # unused function from the original menu option 6
-    """Displays the students scores """
+# NOTE: unused function from the original menu option 6
+def display_student_scores(student_list):
+    """Displays the students' scores """
     print(f'{"Student Academic Scores":^90}')
     print()
     print(f'{"LastName":<16}{"FirstName":<16}{"ID":<10}{"Art":<12}{"Greek":<12}{"Latin":<12}{"Science":<12}{"Mathematics"}')
